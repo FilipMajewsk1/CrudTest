@@ -36,16 +36,27 @@ jobs:
           DRY_RUN: true
 
   bump-version:
-      needs: [build]
-      runs-on: ubuntu-latest
-      steps:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v3
       - name: Bump patch version for each merge
+        id: version_bump
         uses: anothrNick/github-tag-action@1.36.0
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           WITH_V: true
           DEFAULT_BUMP: patch
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: ${{ steps.version_bump.outputs.new_tag }}
+          release_name: Release ${{ steps.version_bump.outputs.new_tag }}
+          draft: false
+          prerelease: false
 
   deploy:
     runs-on: ubuntu-latest
