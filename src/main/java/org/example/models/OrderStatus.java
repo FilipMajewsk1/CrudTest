@@ -1,2 +1,7 @@
-package org.example.models;public enum OrderStatus {
+package org.example.models;
+
+public enum OrderStatus {
+    NEW,
+    PROCESSING,
+    DONE
 }
